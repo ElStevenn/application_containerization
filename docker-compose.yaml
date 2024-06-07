@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  flask-application:
+    image: python:3.12-slim
+    ports:
+      - "8000:80"
+    networks:
+      - custom-isolated-network
+
+  postgres-db:
+    image: postgres:16.3
+    ports:
+      - "5000:5432"
+    volumes:
+      - data_volume:/var/lib/docker/volumes/data_volume
+    environment:
+       POSTGRES_USER: ${DB_USER}
+       POSTGRES_PASSWORD: ${DB_PASS}
+       POSTGRES_DB: ${DB_NAME}
+
+    networks:
+      - custom-isolated-network
+      
+
+networks:
+  custom-isolated-network:
+    external: true
+
+volumes:
+  data_volume: 
