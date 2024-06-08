@@ -59,3 +59,11 @@ update_env "DB_NAME" "$db_name"
 update_env "DB_USER" "$db_user"
 update_env "DB_PASS" "$db_password"
 
+
+echo "Run developerment database container?(y/n)"
+read create_db
+if [ ${create_db} == "y" ]; then
+  docker run -d  --name some-postgres -p 8000:5432 -e POSTGRES_PASSWORD="$db_password" -v data_volume:/var/lib/docker/volumes/data_volume 
+
+
+
