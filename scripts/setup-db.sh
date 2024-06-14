@@ -8,12 +8,16 @@ export DOCKER_HOST=unix:///var/run/docker.sock
 update_env() {
     local key=$1
     local value=$2
+    echo "Updating $key=$value in $env_file"  # Debug line
     if grep -q "^$key=" "$env_file"; then
         sed -i "s/^$key=.*/$key=$value/" "$env_file"
-    else
+    elseS
         echo "$key=$value" >> "$env_file"
     fi
+    # Ensure changes are written
+    sync
 }
+
 
 # Ask for the database credentials
 echo "Create the db user:"
@@ -64,7 +68,7 @@ if [ "$create_db" == "y" ]; then
     if docker container ls -a | grep -q some-postgres; then
         docker container rm -f some-postgres
     fi
-    docker run -d --name some-postgres -p 8000:5432 -e POSTGRES_PASSWORD="$db_password" -v data_volume:/var/lib/postgresql/data postgres
+    docker run -d --name some-postgres -p 5000:5432 -e POSTGRES_PASSWORD="$db_password" -v data_volume:/var/lib/postgresql/data postgres
     container_id=$(docker ps -aqf "name=some-postgres")
     container_ip=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' "$container_id")
     container_port=$(docker inspect -f '{{ (index (index .HostConfig.PortBindings "5432/tcp") 0).HostPort }}' "$container_id")
