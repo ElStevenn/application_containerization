@@ -14,4 +14,4 @@ RUN pip install -r requeriments.txt
 COPY . .
 
 # Run program
-CMD ["python", "passenger_wsgi.py"]
+CMD ["python3", "manage.py", "run", "-p", "8080"]
